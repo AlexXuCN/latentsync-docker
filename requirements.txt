@@ -1,0 +1,45 @@
+# LatentSync-1.6 Python Dependencies
+# PyTorch (installed separately with CUDA support)
+# torch==2.5.1
+# torchvision==0.20.1
+
+# Core ML Libraries
+diffusers==0.32.2
+transformers==4.48.0
+accelerate==0.26.1
+
+# Video Processing
+decord==0.6.0
+opencv-python==4.9.0.80
+imageio==2.31.1
+imageio-ffmpeg==0.5.1
+ffmpeg-python==0.2.0
+scenedetect==0.6.1
+
+# Audio Processing
+librosa==0.10.1
+python_speech_features==0.6
+
+# Computer Vision
+mediapipe==0.10.11
+face-alignment==1.4.1
+insightface==0.7.3
+kornia==0.8.0
+
+# Deep Learning Utilities
+einops==0.7.0
+omegaconf==2.3.0
+lpips==0.1.4
+DeepCache==0.1.1
+
+# ONNX Runtime (GPU)
+onnxruntime-gpu==1.21.0
+
+# Web Interface
+gradio==5.24.0
+
+# HuggingFace Tools
+huggingface-hub==0.30.2
+
+# Utilities
+numpy==1.26.4

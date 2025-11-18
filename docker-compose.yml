@@ -1,0 +1,52 @@
+services:
+  latentsync:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: latentsync:1.6
+    container_name: latentsync-app
+
+    # GPU 支持
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
+    # 端口映射
+    ports:
+      - "8082:8080"  # Gradio Web 界面
+
+    # 数据卷挂载
+    volumes:
+      - ./checkpoints:/app/checkpoints       # 模型检查点
+      - ./inputs:/app/inputs                 # 输入文件
+      - ./outputs:/app/outputs               # 输出文件
+      - ./cache:/app/.cache/huggingface      # HuggingFace 缓存
+
+    # 环境变量
+    environment:
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=8080
+      - CUDA_VISIBLE_DEVICES=0               # 指定使用的 GPU
+      - HF_HOME=/app/.cache/huggingface
+      - PYTHONUNBUFFERED=1
+
+    # 重启策略
+    restart: unless-stopped
+
+    # 健康检查
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+    # 标签
+    labels:
+      - "project=latentsync"
+      - "version=1.6"
+      - "description=ByteDance LatentSync Lip Sync Model"
