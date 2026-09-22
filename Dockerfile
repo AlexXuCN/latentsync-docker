@@ -28,6 +28,7 @@ RUN apt-get update && apt-get install -y \
     python3.10 \
     python3.10-venv \
     python3-pip \
+    unzip \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,7 +43,7 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN pip install --no-cache-dir \
     torch==2.5.1 \
     torchvision==0.20.1 \
-    --index-url https://download.pytorch.org/whl/cu124
+    --index-url https://mirrors.nju.edu.cn/pytorch/whl/cu124/
 
 # 复制 requirements.txt 并安装 Python 依赖
 COPY requirements.txt .
@@ -54,8 +55,7 @@ RUN git clone https://github.com/bytedance/LatentSync.git /app/latentsync && \
     git checkout main
 
 # 复制仓库文件到工作目录
-RUN cp -r /app/latentsync/* /app/ && \
-    rm -rf /app/latentsync
+RUN cp -r /app/latentsync/* /app/
 
 # 创建必要的目录
 RUN mkdir -p /app/checkpoints /app/inputs /app/outputs /app/.cache/huggingface
@@ -66,7 +66,10 @@ ENV HF_HOME=/app/.cache/huggingface
 # 注意：模型需要单独下载，请运行 scripts/download_models.sh
 
 # 暴露 Gradio 端口
-EXPOSE 8080
+EXPOSE 7860
+
+ENV LD_LIBRARY_PATH="/opt/venv/lib/python3.10/site-packages/nvidia/nvjitlink/lib:$LD_LIBRARY_PATH"
 
 # 设置启动命令
-CMD ["python", "gradio_app.py", "--server_name", "0.0.0.0", "--server_port", "8080", "--share"]
+#CMD ["/bin/bash"]
+CMD ["python", "gradio_app.py", "--server_name", "0.0.0.0", "--server_port", "7860"]
